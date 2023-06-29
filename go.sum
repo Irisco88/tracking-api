@@ -59,6 +59,8 @@ github.com/openfms/protos v0.0.0-20230629101334-f39d16ac0fbb h1:R9wGxfAOeaawZHXH
 github.com/openfms/protos v0.0.0-20230629101334-f39d16ac0fbb/go.mod h1:ORRAWNKxQFeVjQle8XJTEKUBPAdObcIJznAXXRPUIRU=
 github.com/openfms/protos v0.0.0-20230629123658-5d85b2b2042a h1:7zkJkIrbLv2tRvyoIie+pOyEZwBl9iCATKfO1WkhJkQ=
 github.com/openfms/protos v0.0.0-20230629123658-5d85b2b2042a/go.mod h1:ORRAWNKxQFeVjQle8XJTEKUBPAdObcIJznAXXRPUIRU=
+github.com/openfms/protos v0.0.0-20230629140036-bb06562ead9c h1:fXluqkkAMeA9p8c8c/OJfLK0wvjkHjABppgNyaIvYnI=
+github.com/openfms/protos v0.0.0-20230629140036-bb06562ead9c/go.mod h1:ORRAWNKxQFeVjQle8XJTEKUBPAdObcIJznAXXRPUIRU=
 github.com/opentracing/opentracing-go v1.1.0/go.mod h1:UkNAQd3GIcIGf0SeVgPpRdFStlNbqXla1AfSYxPUl2o=
 github.com/pkg/errors v0.8.1 h1:iURUrRGxPUNPdy5/HRSm+Yj6okJ6UtLINN0Q9M4+h3I=
 github.com/pkg/errors v0.8.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=

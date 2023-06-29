@@ -6,7 +6,7 @@ require (
 	github.com/golang/protobuf v1.5.3
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
 	github.com/nats-io/nats.go v1.27.1
-	github.com/openfms/protos v0.0.0-20230629123658-5d85b2b2042a
+	github.com/openfms/protos v0.0.0-20230629140036-bb06562ead9c
 	github.com/urfave/cli/v2 v2.25.7
 	go.uber.org/zap v1.24.0
 	golang.org/x/exp v0.0.0-20230626212559-97b1e661b5df
