@@ -15,6 +15,9 @@ import (
 
 func (ts *TrackingService) LiveDevices(req *trkpb.LiveDevicesRequest, stream trkpb.TrackingService_LiveDevicesServer) error {
 	ctx := stream.Context()
+	if len(req.ImeiList) == 0 {
+		return status.Error(codes.InvalidArgument, "imei list is empty")
+	}
 	subChan, err := ts.nats.SubscribeSync("device.lastpoint.*")
 	if err != nil {
 		ts.logger.Error("error subscribe on last point channel", zap.Error(err))
