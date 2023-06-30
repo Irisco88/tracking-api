@@ -45,7 +45,6 @@ func (adb *AVLDataBase) GetLastPoints(ctx context.Context, imeiList []string) ([
 			&gps.Angle,
 			&gps.Satellites,
 			&gps.Speed,
-			&lastPoint.IoElements,
 			&elements,
 		)
 		if err != nil {
