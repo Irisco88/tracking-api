@@ -2,20 +2,21 @@ package clickhouse
 
 import (
 	"context"
-	pb "github.com/openfms/protos/gen/device/v1"
+	devicepb "github.com/openfms/protos/gen/device/v1"
 )
 
 const devicesLastPointsQuery = `
 SELECT
     imei,
-    timestamp,
-    priority,
+    toUInt64(toUnixTimestamp64Milli(timestamp)) AS ts,
+    toUInt8(priority) AS priority,
     longitude,
     latitude,
-    altitude,
-    angle,
-    satellites,
-    speed,
+    toInt32(altitude),
+    toInt32(angle),
+    toInt32(satellites),
+    toInt32(speed),
+    toUInt32(event_id),
     io_elements
 FROM
     lastpoints
@@ -24,35 +25,41 @@ WHERE
 `
 
 // GetLastPoints returns last point of devices filtered by imei
-func (adb *AVLDataBase) GetLastPoints(ctx context.Context, imeiList []string) ([]*pb.AVLData, error) {
+func (adb *AVLDataBase) GetLastPoints(ctx context.Context, imeiList []string) ([]*devicepb.AVLData, error) {
 	rows, err := adb.GetChConn().Query(ctx, devicesLastPointsQuery, imeiList)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	lastPoints := make([]*pb.AVLData, 0)
+	lastPoints := make([]*devicepb.AVLData, 0)
 	for rows.Next() {
-		lastPoint := &pb.AVLData{}
-		gps := &pb.GPS{}
-		elements := make(map[uint16]int64)
+		var (
+			lastPoint = &devicepb.AVLData{}
+			gps       = &devicepb.GPS{}
+			priority  uint8
+			elements  = make(map[uint16]int64)
+		)
+
 		err := rows.Scan(
 			&lastPoint.Imei,
 			&lastPoint.Timestamp,
-			&lastPoint.Priority,
+			&priority,
 			&gps.Longitude,
 			&gps.Latitude,
 			&gps.Altitude,
 			&gps.Angle,
 			&gps.Satellites,
 			&gps.Speed,
+			&lastPoint.EventId,
 			&elements,
 		)
 		if err != nil {
 			return nil, err
 		}
 		lastPoint.Gps = gps
+		lastPoint.Priority = devicepb.PacketPriority(priority)
 		for elementID, value := range elements {
-			lastPoint.IoElements = append(lastPoint.IoElements, &pb.IOElement{
+			lastPoint.IoElements = append(lastPoint.IoElements, &devicepb.IOElement{
 				ElementId: int32(elementID),
 				Value:     value,
 			})
