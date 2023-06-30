@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	trkpb "github.com/openfms/protos/gen/tracking/v1"
+	"github.com/openfms/tracking-api/db"
 	"github.com/openfms/tracking-api/trackingapi"
 	"github.com/urfave/cli/v2"
 	"google.golang.org/grpc/reflection"
@@ -17,11 +18,13 @@ import (
 )
 
 var (
-	HostAddress string
-	PortNumber  uint
-	NatsAddr    string
-	DebugMode   bool
-	LogRequests bool
+	HostAddress     string
+	PortNumber      uint
+	NatsAddr        string
+	DebugMode       bool
+	LogRequests     bool
+	AvlDBClickhouse string
+	FmsDBPostgres   string
 )
 
 func main() {
@@ -77,6 +80,24 @@ func main() {
 						EnvVars:     []string{"LOG_REQUESTS"},
 						Required:    false,
 					},
+					&cli.StringFlag{
+						Name:        "avldb",
+						Usage:       "avldb clickhouse url",
+						Value:       "clickhouse://admin:password@127.0.0.1:9423/default?dial_timeout=200ms",
+						DefaultText: "clickhouse://admin:password@127.0.0.1:9423/default?dial_timeout=200ms",
+						Destination: &AvlDBClickhouse,
+						EnvVars:     []string{"AVLDB_CLICKHOUSE"},
+						Required:    true,
+					},
+					&cli.StringFlag{
+						Name:        "fmsdb",
+						Usage:       "fmsdb postgres url",
+						Value:       "postgres://admin:password@127.0.0.1:9423/default",
+						DefaultText: "postgres://admin:password@127.0.0.1:9423/default",
+						Destination: &FmsDBPostgres,
+						EnvVars:     []string{"FMSDB_POSTGRES"},
+						Required:    true,
+					},
 				},
 				Action: func(ctx *cli.Context) error {
 					loggerConfig := zap.NewProductionConfig()
@@ -96,9 +117,13 @@ func main() {
 					addr := net.JoinHostPort(HostAddress, fmt.Sprintf("%d", PortNumber))
 					lis, err := net.Listen("tcp", addr)
 					if err != nil {
-						return fmt.Errorf("faild to make listen address")
+						return fmt.Errorf("faild to make listen address:%v", err)
 					}
-					trackingSrv := trackingapi.NewTrackingService(logger, natsCon)
+					trkDB, err := db.NewTrackingDB(AvlDBClickhouse, FmsDBPostgres)
+					if err != nil {
+						return err
+					}
+					trackingSrv := trackingapi.NewTrackingService(logger, natsCon, trkDB)
 					trkpb.RegisterTrackingServiceServer(server, trackingSrv)
 					go func() {
 						logger.Info("Server running ",
