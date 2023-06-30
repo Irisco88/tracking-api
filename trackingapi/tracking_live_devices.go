@@ -20,7 +20,7 @@ func (ts *TrackingService) LiveDevices(stream trkpb.TrackingService_LiveDevicesS
 		return status.Error(codes.Internal, "internal error")
 	}
 	if len(req.ImeiList) == 0 {
-		return status.Error(codes.InvalidArgument, "IMEI list is empty")
+		return status.Error(codes.InvalidArgument, "imei list is required")
 	}
 	subChan, err := ts.nats.SubscribeSync("device.lastpoint.*")
 	if err != nil {
