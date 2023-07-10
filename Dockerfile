@@ -29,7 +29,7 @@ RUN --mount=type=cache,mode=0755,target=/go/pkg/mod CGO_ENABLED=0 GOOS=linux GOA
 
 ARG COMPRESS
 RUN mkdir -p /final && \
-    if [ "$COMPRESS" = "true" ] ;then upx --best --lzma -o /final/trackingsrv ./bin/trackingsrv ;else cp ./bin/release/trackingsrv /final; fi
+    if [ "$COMPRESS" = "true" ] ;then upx --best --lzma -o /final/trackingsrv ./bin/trackingsrv ;else cp ./bin/trackingsrv /final; fi
 
 FROM scratch AS final
 
