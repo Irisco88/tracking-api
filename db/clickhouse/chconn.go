@@ -4,14 +4,14 @@ import (
 	"context"
 	"github.com/ClickHouse/clickhouse-go/v2"
 	"github.com/ClickHouse/clickhouse-go/v2/lib/driver"
-	pb "github.com/openfms/protos/gen/device/v1"
+	devicepb "github.com/openfms/protos/gen/device/v1"
 	"net"
 	"time"
 )
 
 type AVLDBConn interface {
 	GetChConn() driver.Conn
-	GetLastPoints(ctx context.Context, imeiList []string) ([]*pb.AVLData, error)
+	GetLastPoints(ctx context.Context, imeiList []string) ([]*devicepb.AVLData, error)
 }
 
 var _ AVLDBConn = &AVLDataBase{}
