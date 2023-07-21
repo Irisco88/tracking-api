@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/openfms/authutil"
 	trkpb "github.com/openfms/protos/gen/tracking/v1"
 	"github.com/openfms/tracking-api/db"
 	"github.com/openfms/tracking-api/trackingapi"
@@ -12,6 +13,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/nats-io/nats.go"
 	"go.uber.org/zap"
@@ -25,9 +27,16 @@ var (
 	LogRequests     bool
 	AvlDBClickhouse string
 	FmsDBPostgres   string
+	SecretKey       string
+	TokenValidTime  time.Duration
+	Domain          string
 )
 
 func main() {
+	randSecret, err := authutil.GenerateRandomSecretKey(10)
+	if err != nil {
+		log.Fatal(err)
+	}
 	app := &cli.App{
 		Name:  "server",
 		Usage: "tracking service",
@@ -98,6 +107,29 @@ func main() {
 						EnvVars:     []string{"FMSDB_POSTGRES"},
 						Required:    true,
 					},
+					&cli.StringFlag{
+						Name:        "secret",
+						Usage:       "jwt secret",
+						Value:       randSecret,
+						DefaultText: randSecret,
+						EnvVars:     []string{"JWT_SECRET"},
+						Destination: &SecretKey,
+					},
+					&cli.StringFlag{
+						Name:        "domain",
+						Usage:       "server domain name",
+						Required:    true,
+						EnvVars:     []string{"DOMAIN"},
+						Destination: &Domain,
+					},
+					&cli.DurationFlag{
+						Name:        "valid-time",
+						Usage:       "jwt toke valid time duration",
+						Value:       time.Hour * 48,
+						DefaultText: "48 hour",
+						EnvVars:     []string{"JWT_VALID_TIME"},
+						Destination: &TokenValidTime,
+					},
 				},
 				Action: func(ctx *cli.Context) error {
 					loggerConfig := zap.NewProductionConfig()
@@ -123,7 +155,8 @@ func main() {
 					if err != nil {
 						return err
 					}
-					trackingSrv := trackingapi.NewTrackingService(logger, natsCon, trkDB)
+					authManager := authutil.NewAuthManager(SecretKey, Domain, TokenValidTime)
+					trackingSrv := trackingapi.NewTrackingService(logger, natsCon, trkDB, authManager)
 					trkpb.RegisterTrackingServiceServer(server, trackingSrv)
 					go func() {
 						logger.Info("Server running ",
