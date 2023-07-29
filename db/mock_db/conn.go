@@ -6,106 +6,91 @@ package mock_db
 
 import (
 	context "context"
+	reflect "reflect"
+
 	driver "github.com/ClickHouse/clickhouse-go/v2/lib/driver"
 	squirrel "github.com/Masterminds/squirrel"
 	gomock "github.com/golang/mock/gomock"
 	pgxpool "github.com/jackc/pgx/v5/pgxpool"
-	v1 "github.com/openfms/protos/gen/device/v1"
-	reflect "reflect"
+	devicev1 "github.com/openfms/protos/gen/device/v1"
 )
 
-// MockTrackingDB is a mock of TrackingDB interface
+// MockTrackingDB is a mock of TrackingDB interface.
 type MockTrackingDB struct {
 	ctrl     *gomock.Controller
 	recorder *MockTrackingDBMockRecorder
 }
 
-// MockTrackingDBMockRecorder is the mock recorder for MockTrackingDB
+// MockTrackingDBMockRecorder is the mock recorder for MockTrackingDB.
 type MockTrackingDBMockRecorder struct {
 	mock *MockTrackingDB
 }
 
-// NewMockTrackingDB creates a new mock instance
+// NewMockTrackingDB creates a new mock instance.
 func NewMockTrackingDB(ctrl *gomock.Controller) *MockTrackingDB {
 	mock := &MockTrackingDB{ctrl: ctrl}
 	mock.recorder = &MockTrackingDBMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use
+// EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockTrackingDB) EXPECT() *MockTrackingDBMockRecorder {
 	return m.recorder
 }
 
-// GetPgConn mocks base method
-func (m *MockTrackingDB) GetPgConn() *pgxpool.Pool {
-	ret := m.ctrl.Call(m, "GetPgConn")
-	ret0, _ := ret[0].(*pgxpool.Pool)
-	return ret0
-}
-
-// GetPgConn indicates an expected call of GetPgConn
-func (mr *MockTrackingDBMockRecorder) GetPgConn() *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetPgConn", reflect.TypeOf((*MockTrackingDB)(nil).GetPgConn))
-}
-
-// GetChConn mocks base method
+// GetChConn mocks base method.
 func (m *MockTrackingDB) GetChConn() driver.Conn {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetChConn")
 	ret0, _ := ret[0].(driver.Conn)
 	return ret0
 }
 
-// GetChConn indicates an expected call of GetChConn
+// GetChConn indicates an expected call of GetChConn.
 func (mr *MockTrackingDBMockRecorder) GetChConn() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetChConn", reflect.TypeOf((*MockTrackingDB)(nil).GetChConn))
 }
 
-// GetChConn mocks base method
-func (m *MockTrackingDB) GetChConn() driver.Conn {
-	ret := m.ctrl.Call(m, "GetChConn")
-	ret0, _ := ret[0].(driver.Conn)
-	return ret0
-}
-
-// GetChConn indicates an expected call of GetChConn
-func (mr *MockTrackingDBMockRecorder) GetChConn() *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetChConn", reflect.TypeOf((*MockTrackingDB)(nil).GetChConn))
-}
-
-// GetLastPoints mocks base method
-func (m *MockTrackingDB) GetLastPoints(ctx context.Context, imeiList []string) ([]*v1.AVLData, error) {
+// GetLastPoints mocks base method.
+func (m *MockTrackingDB) GetLastPoints(ctx context.Context, imeiList []string) ([]*devicev1.AVLData, error) {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetLastPoints", ctx, imeiList)
-	ret0, _ := ret[0].([]*v1.AVLData)
+	ret0, _ := ret[0].([]*devicev1.AVLData)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetLastPoints indicates an expected call of GetLastPoints
+// GetLastPoints indicates an expected call of GetLastPoints.
 func (mr *MockTrackingDBMockRecorder) GetLastPoints(ctx, imeiList interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetLastPoints", reflect.TypeOf((*MockTrackingDB)(nil).GetLastPoints), ctx, imeiList)
 }
 
-// GetPgConn mocks base method
+// GetPgConn mocks base method.
 func (m *MockTrackingDB) GetPgConn() *pgxpool.Pool {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetPgConn")
 	ret0, _ := ret[0].(*pgxpool.Pool)
 	return ret0
 }
 
-// GetPgConn indicates an expected call of GetPgConn
+// GetPgConn indicates an expected call of GetPgConn.
 func (mr *MockTrackingDBMockRecorder) GetPgConn() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetPgConn", reflect.TypeOf((*MockTrackingDB)(nil).GetPgConn))
 }
 
-// GetSQLBuilder mocks base method
+// GetSQLBuilder mocks base method.
 func (m *MockTrackingDB) GetSQLBuilder() squirrel.StatementBuilderType {
+	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetSQLBuilder")
 	ret0, _ := ret[0].(squirrel.StatementBuilderType)
 	return ret0
 }
 
-// GetSQLBuilder indicates an expected call of GetSQLBuilder
+// GetSQLBuilder indicates an expected call of GetSQLBuilder.
 func (mr *MockTrackingDBMockRecorder) GetSQLBuilder() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSQLBuilder", reflect.TypeOf((*MockTrackingDB)(nil).GetSQLBuilder))
 }
