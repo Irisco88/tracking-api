@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
-	"github.com/openfms/authutil"
-	trkpb "github.com/openfms/protos/gen/tracking/v1"
-	"github.com/openfms/tracking-api/db"
-	"github.com/openfms/tracking-api/trackingapi"
+	"github.com/irisco88/authutil"
+	trkpb "github.com/irisco88/protos/gen/tracking/v1"
+	"github.com/irisco88/tracking-api/db"
+	"github.com/irisco88/tracking-api/trackingapi"
 	"github.com/urfave/cli/v2"
 	"google.golang.org/grpc/reflection"
 	"log"

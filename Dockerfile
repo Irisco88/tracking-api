@@ -2,8 +2,8 @@
 ARG GO_VERSION="1.20"
 ARG GOPROXYURL="https://goproxy.io"
 ARG COMPRESS="true"
-ARG COMPANY_HOST="github.com/openfms"
-ARG GITHUB_TOKEN
+ARG COMPANY_HOST="github.com/irisco88"
+ARG GITHUB_TOKEN="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"
 
 FROM golang:${GO_VERSION}-alpine AS builder
 # install packages

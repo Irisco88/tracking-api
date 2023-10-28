@@ -1,4 +1,4 @@
-module github.com/openfms/tracking-api
+module github.com/irisco88/tracking-api
 
 go 1.20
 
@@ -10,8 +10,8 @@ require (
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
 	github.com/jackc/pgx/v5 v5.4.1
 	github.com/nats-io/nats.go v1.27.1
-	github.com/openfms/authutil v0.0.0-20230724053841-3a1a75fda51b
-	github.com/openfms/protos v0.0.0-20230723091904-baca89bfe4fb
+	github.com/irisco88/authutil v1.0.0
+	github.com/irisco88/protos v1.0.0
 	github.com/urfave/cli/v2 v2.25.7
 	go.uber.org/zap v1.24.0
 	golang.org/x/exp v0.0.0-20230713183714-613f0c0eb8a1

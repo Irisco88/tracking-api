@@ -2,10 +2,10 @@ package trackingapi
 
 import (
 	"github.com/nats-io/nats.go"
-	"github.com/openfms/authutil"
-	commonpb "github.com/openfms/protos/gen/common/v1"
-	trackingpb "github.com/openfms/protos/gen/tracking/v1"
-	"github.com/openfms/tracking-api/db"
+	"github.com/irisco88/authutil"
+	commonpb "github.com/irisco88/protos/gen/common/v1"
+	trackingpb "github.com/irisco88/protos/gen/tracking/v1"
+	"github.com/irisco88/tracking-api/db"
 	"go.uber.org/zap"
 )
 

@@ -2,7 +2,7 @@ package clickhouse
 
 import (
 	"context"
-	devicepb "github.com/openfms/protos/gen/device/v1"
+	devicepb "github.com/irisco88/protos/gen/device/v1"
 )
 
 const devicesLastPointsQuery = `
