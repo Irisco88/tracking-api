@@ -23,9 +23,12 @@ COPY . .
 # Get all of our dependencies
 ARG GOPROXYURL
 RUN --mount=type=cache,mode=0755,target=/go/pkg/mod GOPROXY="${GOPROXYURL}" go mod download -x
+
+RUN go mod download && go mod verify
 # compile project
 RUN --mount=type=cache,mode=0755,target=/go/pkg/mod CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
     go build -ldflags "-s -w" -a -installsuffix cgo -o ./bin/trackingsrv ./cmd/...
+ 
 
 ARG COMPRESS
 RUN mkdir -p /final && \
