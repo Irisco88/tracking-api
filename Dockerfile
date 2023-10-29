@@ -3,7 +3,7 @@ ARG GO_VERSION="1.20"
 ARG GOPROXYURL="https://goproxy.io"
 ARG COMPRESS="true"
 ARG COMPANY_HOST="github.com/irisco88"
-ARG GITHUB_TOKEN="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"
+ARG GITHUB_TOKEN="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"
 
 FROM golang:${GO_VERSION}-alpine AS builder
 # install packages
