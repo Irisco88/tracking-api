@@ -37,7 +37,7 @@ func (adb *AVLDataBase) GetLastPoints(ctx context.Context, imeiList []string) ([
 			lastPoint = &devicepb.AVLData{}
 			gps       = &devicepb.GPS{}
 			priority  uint8
-			elements  = make(map[uint16]int64)
+			elements  = make(map[uint16][]*devicepb.Value)
 		)
 
 		err := rows.Scan(
