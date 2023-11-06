@@ -3,8 +3,8 @@ package trackingapi
 import (
 	"errors"
 	"github.com/golang/protobuf/proto"
-	devicepb "github.com/irisco88/protos/gen/device/v1"
-	trkpb "github.com/irisco88/protos/gen/tracking/v1"
+	devicepb "github.com/irisco88/protos/gen/device/v2"
+	trkpb "github.com/irisco88/protos/gen/tracking/v2"
 	"go.uber.org/zap"
 	"golang.org/x/exp/slices"
 	"google.golang.org/grpc/codes"

@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/irisco88/authutil"
-	trkpb "github.com/irisco88/protos/gen/tracking/v1"
+	trkpb "github.com/irisco88/protos/gen/tracking/v2"
 	"github.com/irisco88/tracking-api/db"
 	"github.com/irisco88/tracking-api/trackingapi"
 	"github.com/urfave/cli/v2"
