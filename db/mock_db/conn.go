@@ -12,7 +12,7 @@ import (
 	squirrel "github.com/Masterminds/squirrel"
 	gomock "github.com/golang/mock/gomock"
 	pgxpool "github.com/jackc/pgx/v5/pgxpool"
-	devicev1 "github.com/irisco88/protos/gen/device/v2"
+	devicev1 "github.com/irisco88/protos/gen/device/v1"
 )
 
 // MockTrackingDB is a mock of TrackingDB interface.

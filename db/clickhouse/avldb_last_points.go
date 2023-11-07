@@ -2,7 +2,7 @@ package clickhouse
 
 import (
 	"context"
-	devicepb "github.com/irisco88/protos/gen/device/v2"
+	devicepb "github.com/irisco88/protos/gen/device/v1"
 )
 
 const devicesLastPointsQuery = `

@@ -37,8 +37,8 @@ github.com/google/go-cmp v0.5.5/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/
 github.com/google/uuid v1.3.1/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
 github.com/grpc-ecosystem/go-grpc-middleware v1.4.0/go.mod h1:g5qyo/la0ALbONm6Vbp88Yd8NsDy6rZz+RcrMPxvld8=
 github.com/grpc-ecosystem/grpc-gateway/v2 v2.18.0/go.mod h1:TzP6duP4Py2pHLVPPQp42aoYI92+PCrVotyR5e8Vqlk=
-github.com/irisco88/authutil v1.0.3/go.mod h1:cz+5qeoYKONv7XF3bTANhsb8N/GcE1zemsMDuLshiDc=
-github.com/irisco88/protos v1.0.14/go.mod h1:k7GL91nHLXBG6yb3oaJVBg5f0zK7GMpDUufQW4IkcGc=
+github.com/irisco88/authutil v1.1.15/go.mod h1:cz+5qeoYKONv7XF3bTANhsb8N/GcE1zemsMDuLshiDc=
+github.com/irisco88/protos v1.1.15/go.mod h1:k7GL91nHLXBG6yb3oaJVBg5f0zK7GMpDUufQW4IkcGc=
 github.com/jackc/pgpassfile v1.0.0/go.mod h1:CEx0iS5ambNFdcRtxPj5JhEz+xB6uRky5eyVu/W2HEg=
 github.com/jackc/pgservicefile v0.0.0-20221227161230-091c0ba34f0a/go.mod h1:5TJZWKEWniPve33vlWYSoGYefn3gLQRzjfDlhSJ9ZKM=
 github.com/jackc/pgx/v5 v5.4.1/go.mod h1:q6iHT8uDNXWiFNOlRqJzBTaSH3+2xCXkokxHZC5qWFY=

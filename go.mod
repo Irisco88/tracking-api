@@ -8,8 +8,8 @@ require (
 	github.com/golang/mock v1.6.0
 	github.com/golang/protobuf v1.5.3
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
-	github.com/irisco88/authutil v1.0.3
-	github.com/irisco88/protos v1.0.14
+	github.com/irisco88/authutil v1.1.15
+	github.com/irisco88/protos v1.1.15
 	github.com/jackc/pgx/v5 v5.4.1
 	github.com/nats-io/nats.go v1.27.1
 	github.com/urfave/cli/v2 v2.25.7

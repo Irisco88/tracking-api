@@ -2,7 +2,7 @@ package trackingapi
 
 import (
 	"context"
-	trackingv1 "github.com/irisco88/protos/gen/tracking/v2"
+	trackingv1 "github.com/irisco88/protos/gen/tracking/v1"
 	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
