@@ -59,10 +59,15 @@ func (adb *AVLDataBase) GetLastPoints(ctx context.Context, imeiList []string) ([
 		lastPoint.Gps = gps
 		lastPoint.Priority = devicepb.PacketPriority(priority)
 		for elementID, value := range elements {
+			elementMap := make(map[string]float64)
+			for _, elValue := range value {
+				elementMap[(elValue.ElementName)] = elValue.ElementValue
+			}
 			lastPoint.IoElements = append(lastPoint.IoElements, &devicepb.IOElement{
 				ElementId: int32(elementID),
 				Value:     value,
 			})
+
 		}
 		lastPoints = append(lastPoints, lastPoint)
 	}
