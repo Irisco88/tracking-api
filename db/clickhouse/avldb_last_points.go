@@ -37,7 +37,7 @@ func (adb *AVLDataBase) GetLastPoints(ctx context.Context, imeiList []string) ([
 			lastPoint = &devicepb.AVLData{}
 			gps       = &devicepb.GPS{}
 			priority  uint8
-			elements  = make(map[uint16][]*devicepb.Value)
+			elements  = make(map[string]float64)
 		)
 
 		err := rows.Scan(
@@ -58,16 +58,21 @@ func (adb *AVLDataBase) GetLastPoints(ctx context.Context, imeiList []string) ([
 		}
 		lastPoint.Gps = gps
 		lastPoint.Priority = devicepb.PacketPriority(priority)
-		for elementID, value := range elements {
-			elementMap := make(map[string]float64)
-			for _, elValue := range value {
-				elementMap[(elValue.ElementName)] = elValue.ElementValue
-			}
-			lastPoint.IoElements = append(lastPoint.IoElements, &devicepb.IOElement{
-				ElementId: int32(elementID),
-				Value:     value,
-			})
+		//for elementID, value := range elements {
+		//	elementMap := make(map[string]float64)
+		//	elementMap[(elValue.ElementName)] = elValue.ElementValue
+		//	lastPoint.IoElements = append(lastPoint.IoElements, &devicepb.IOElement{
+		//		ElementId: int32(elementID),
+		//		Value:     value,
+		//	})
+		//}
+		//lastPoints = append(lastPoints, lastPoint)
 
+		for Name, Value := range elements {
+			lastPoint.IoElements = append(lastPoint.IoElements, &devicepb.IOElement{
+				ElementName:  Name,
+				ElementValue: Value,
+			})
 		}
 		lastPoints = append(lastPoints, lastPoint)
 	}
