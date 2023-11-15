@@ -8,7 +8,7 @@ import (
 const devicesLastPointsQuery = `
 SELECT
     imei,
-    toUInt64(toUnixTimestamp64Milli(timestamp)) AS ts,
+    timestamp AS ts,
     toUInt8(priority) AS priority,
     longitude,
     latitude,
