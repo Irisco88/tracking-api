@@ -3,41 +3,47 @@ package clickhouse
 import (
 	"context"
 	devicepb "github.com/irisco88/protos/gen/device/v1"
-	"go.uber.org/zap"
 	"strings"
 )
 
 func (adb *AVLDataBase) GetLastPointsData(ctx context.Context, dataFilter string) ([]*devicepb.AVLData, error) {
-	logger, _ := zap.NewDevelopment()
-	defer logger.Sync()
+	//logger, _ := zap.NewDevelopment()
+	//defer logger.Sync()
 	dataFilterQ := "  "
-	if strings.Contains(dataFilter, "from:") || strings.Contains(dataFilter, "to:") {
-		logger.Info("dataFilterQ: ",
-			zap.Any("5:", dataFilterQ),
-			zap.Any("6:", dataFilter),
-		)
-		if strings.Contains(dataFilter, "from:") {
-			froms := strings.Split(dataFilter, "from:")[1]
+	if strings.Contains(dataFilter, "from=") || strings.Contains(dataFilter, "to=") || strings.Contains(dataFilter, "imei=") || strings.Contains(dataFilter, "priority=") || strings.Contains(dataFilter, "eventid=") {
+		dataFrom := ""
+		dataTo := ""
+		dataImei := ""
+		dataPriority := ""
+		dataEventId := ""
+		if strings.Contains(dataFilter, "from=") {
+			froms := strings.Split(dataFilter, "from=")[1]
 			from := strings.Split(froms, "&")[0]
-			dataFilterQ = " timestamp >= '" + from + "' "
+			dataFrom = " and  timestamp >= '" + from + "' "
 		}
-		if strings.Contains(dataFilter, "to:") {
-			tos := strings.Split(dataFilter, "to:")[1]
+		if strings.Contains(dataFilter, "to=") {
+			tos := strings.Split(dataFilter, "to=")[1]
 			to := strings.Split(tos, "&")[0]
-			if strings.Contains(dataFilter, "from:") {
-				dataFilterQ = dataFilterQ + " and "
-			}
-			dataFilterQ = dataFilterQ + " timestamp <= '" + to + "' "
+			dataTo = " and timestamp <= '" + to + "' "
 		}
-		dataFilterQ = " where " + dataFilterQ + " order by timestamp desc"
-		logger.Info("dataFilterQ: ",
-			zap.Any("7:", dataFilterQ),
-			zap.Any("8:", dataFilter),
-		)
+		if strings.Contains(dataFilter, "imei=") {
+			imeis := strings.Split(dataFilter, "imei=")[1]
+			imei := strings.Split(imeis, "&")[0]
+			dataImei = " and imei = '" + imei + "' "
+		}
+		if strings.Contains(dataFilter, "priority=") {
+			prioritys := strings.Split(dataFilter, "priority=")[1]
+			priority := strings.Split(prioritys, "&")[0]
+			dataPriority = " and priority = '" + priority + "' "
+		}
+		if strings.Contains(dataFilter, "eventid=") {
+			eventids := strings.Split(dataFilter, "eventid=")[1]
+			eventid := strings.Split(eventids, "&")[0]
+			dataEventId = " and event_id = " + eventid + " "
+		}
+		dataFilterQ = " where imei!='0' " + dataFrom + dataTo + dataImei + dataPriority + dataEventId + " order by timestamp desc"
 	}
-
 	devicesLastPointsDatasQuery := "SELECT imei,timestamp AS ts,toUInt8(priority) AS priority,longitude,latitude,toInt32(altitude),toInt32(angle),toInt32(satellites),toInt32(speed), toUInt32(event_id),io_elements FROM avlpoints " + dataFilterQ
-
 	rows, err := adb.GetChConn().Query(ctx, devicesLastPointsDatasQuery, &dataFilterQ)
 	if err != nil {
 		return nil, err
