@@ -12,6 +12,7 @@ import (
 type AVLDBConn interface {
 	GetChConn() driver.Conn
 	GetLastPoints(ctx context.Context, imeiList []string) ([]*devicepb.AVLData, error)
+	GetLastPointsData(ctx context.Context, dataFilter string) ([]*devicepb.AVLData, error)
 }
 
 var _ AVLDBConn = &AVLDataBase{}

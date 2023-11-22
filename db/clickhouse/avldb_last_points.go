@@ -39,7 +39,6 @@ func (adb *AVLDataBase) GetLastPoints(ctx context.Context, imeiList []string) ([
 			priority  uint8
 			elements  = make(map[string]float64)
 		)
-
 		err := rows.Scan(
 			&lastPoint.Imei,
 			&lastPoint.Timestamp,
@@ -67,7 +66,6 @@ func (adb *AVLDataBase) GetLastPoints(ctx context.Context, imeiList []string) ([
 		//	})
 		//}
 		//lastPoints = append(lastPoints, lastPoint)
-
 		for Name, Value := range elements {
 			lastPoint.IoElements = append(lastPoint.IoElements, &devicepb.IOElement{
 				ElementName:  Name,
