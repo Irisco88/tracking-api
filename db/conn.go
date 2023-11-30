@@ -2,9 +2,9 @@ package db
 
 import (
 	"github.com/ClickHouse/clickhouse-go/v2/lib/driver"
-	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/irisco88/tracking-api/db/clickhouse"
 	"github.com/irisco88/tracking-api/db/postgres"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 //go:generate mockgen -source=$GOFILE -destination=mock_db/conn.go -package=$GOPACKAG

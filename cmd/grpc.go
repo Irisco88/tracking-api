@@ -43,6 +43,7 @@ func grpcServer(logger *zap.Logger, logReqs bool) *grpc.Server {
 	return grpc.NewServer(
 		grpc.StreamInterceptor(grpcMiddleware.ChainStreamServer(streamServerOptions...)),
 		grpc.UnaryInterceptor(grpcMiddleware.ChainUnaryServer(unaryServerOptions...)),
-		grpc.MaxRecvMsgSize(1024*1024*50),
+		grpc.MaxRecvMsgSize(1024*1024*1024*1024),
+		//grpc.MaxMsgSize(1024*1024*1024),
 	)
 }
