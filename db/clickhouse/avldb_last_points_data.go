@@ -793,7 +793,7 @@ func (adb *AVLDataBase) GetLastPointsData(ctx context.Context, dataFilter string
 			//pgNum := strings.Split(pgNums, "&")[0]
 			//dataPg = pgNum
 		}
-		limitData = " limit 20 OFFSET 1"
+		limitData = " limit 200 OFFSET 1"
 		dataFilterQ = whereQuery + dataFrom + dataTo + dataImei + dataPriority + dataEventId + dataSpeed +
 			dataIgnition +
 			dataGSMSignal +
