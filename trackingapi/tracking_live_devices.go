@@ -32,7 +32,6 @@ func (ts *TrackingService) LiveDevices(stream trkpb.TrackingService_LiveDevicesS
 			ts.logger.Error("error unsubscribing from subscription", zap.Error(err))
 		}
 	}()
-
 	for {
 		select {
 		case <-ctx.Done():

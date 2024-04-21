@@ -2,8 +2,10 @@ package clickhouse
 
 import (
 	"context"
+	"fmt"
 	devicepb "github.com/irisco88/protos/gen/device/v1"
 	"go.uber.org/zap"
+	"strconv"
 	"strings"
 )
 
@@ -43,12 +45,10 @@ func (adb *AVLDataBase) GetAllPointsData(ctx context.Context, dataFilter string)
 			eventid := strings.Split(eventids, "&")[0]
 			dataEventId = " and event_id = " + eventid + " "
 		}
-		dataFilterQ = " where imei!='0' " + dataFrom + dataTo + dataImei + dataPriority + dataEventId + " limit 1000 OFFSET 1 "
+		dataFilterQ = " where imei!='0' " + dataFrom + dataTo + dataImei + dataPriority + dataEventId
 	}
-	devicesLastPointsDatasQuery := "SELECT imei,timestamp AS ts,toUInt8(priority) AS priority,longitude,latitude,toInt32(altitude),toInt32(angle),toInt32(satellites),toInt32(speed), toUInt32(event_id),io_elements FROM avlpoints " + dataFilterQ
-	//logger.Info("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&0",
-	//	zap.Any("1:", devicesLastPointsDatasQuery),
-	//)
+	devicesLastPointsDatasQuery := "SELECT imei,timestamp AS ts,toUInt8(priority) AS priority,longitude,latitude,toInt32(altitude),toInt32(angle),toInt32(satellites),toInt32(speed), toUInt32(event_id),io_elements FROM avlpoints " + dataFilterQ + " order by timestamp "
+
 	rows, err := adb.GetChConn().Query(ctx, devicesLastPointsDatasQuery, &dataFilterQ)
 	if err != nil {
 		logger.Info("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&1",
@@ -66,7 +66,7 @@ func (adb *AVLDataBase) GetAllPointsData(ctx context.Context, dataFilter string)
 			lastPointData = &devicepb.AVLData{}
 			gps           = &devicepb.GPS{}
 			priority      uint8
-			elements      = make(map[string]float64)
+			elements      = make(map[string]string)
 		)
 		err := rows.Scan(
 			&lastPointData.Imei,
@@ -89,13 +89,50 @@ func (adb *AVLDataBase) GetAllPointsData(ctx context.Context, dataFilter string)
 		}
 		lastPointData.Gps = gps
 		lastPointData.Priority = devicepb.PacketPriority(priority)
+
 		for Name, Value := range elements {
-			lastPointData.IoElements = append(lastPointData.IoElements, &devicepb.IOElement{
-				ElementName:  Name,
-				ElementValue: Value,
-			})
+			firstFloat, secondFloat, err := splitString(Value)
+			if err != nil {
+				lastPointData.IoElements = append(lastPointData.IoElements, &devicepb.IOElement{
+					ElementName:  Name,
+					ElementValue: 0,
+					NormalValue:  0,
+				})
+			} else {
+				lastPointData.IoElements = append(lastPointData.IoElements, &devicepb.IOElement{
+					ElementName:  Name,
+					ElementValue: firstFloat,
+					NormalValue:  secondFloat,
+				})
+			}
 		}
 		lastPointsData = append(lastPointsData, lastPointData)
 	}
 	return lastPointsData, nil
+}
+
+func splitString(elValue string) (val float64, normalVal float64, err error) {
+	underscoreIndex := strings.Index(elValue, "_")
+	if underscoreIndex != -1 {
+		firstPart := elValue[:underscoreIndex]
+		secondPart := elValue[underscoreIndex+1:]
+
+		firstFloat, err1 := strconv.ParseFloat(firstPart, 64)
+		secondFloat, err2 := strconv.ParseFloat(secondPart, 64)
+
+		if err1 != nil || err2 != nil {
+			return 0, 0, fmt.Errorf("error converting substrings to float64")
+		} else {
+			return firstFloat, secondFloat, nil
+		}
+	} else {
+		// Return 0 in both parameters if there is no underscore
+		ev, err := strconv.ParseFloat(elValue, 64)
+		if err != nil {
+			return 0, 0, fmt.Errorf("error converting substrings to float64")
+		} else {
+			return ev, 0, nil
+		}
+
+	}
 }

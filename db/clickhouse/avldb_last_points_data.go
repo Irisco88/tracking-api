@@ -2,6 +2,8 @@ package clickhouse
 
 import (
 	"context"
+	"fmt"
+	"strconv"
 
 	"go.uber.org/zap"
 
@@ -97,6 +99,7 @@ func (adb *AVLDataBase) GetLastPointsData(ctx context.Context, dataFilter string
 	dataSensor18 := ""
 	dataSensor19 := ""
 	dataSensor20 := ""
+	order := ""
 	if strings.Contains(dataFilter, "hasOR") {
 		hasOR = " or "
 		whereQuery = " where imei=='0' "
@@ -756,7 +759,6 @@ func (adb *AVLDataBase) GetLastPointsData(ctx context.Context, dataFilter string
 		dataEventId := ""
 		limitData := ""
 		//		dataPg := "1"
-
 		if strings.Contains(dataFilter, "from=") {
 			froms := strings.Split(dataFilter, "from=")[1]
 			from := strings.Split(froms, "&")[0]
@@ -783,17 +785,18 @@ func (adb *AVLDataBase) GetLastPointsData(ctx context.Context, dataFilter string
 			eventid1 := strings.Split(eventid, "_")[0]
 			eventid2 := strings.Split(eventid, "_")[1]
 			dataEventId = hasOR + "  event_id >= " + eventid1 + hasOR + "   event_id<= " + eventid2
-
 		}
-		//if strings.Contains(dataFilter, "limit") {
-
-		//}
+		if strings.Contains(dataFilter, "limit=") {
+			limitDatas := strings.Split(dataFilter, "limit=")[1]
+			limitDataa := strings.Split(limitDatas, "&")[0]
+			limitData = " Limit " + limitDataa
+		}
 		if strings.Contains(dataFilter, "pg=") {
 			//	pgNums := strings.Split(dataFilter, "pg=")[1]
 			//pgNum := strings.Split(pgNums, "&")[0]
 			//dataPg = pgNum
 		}
-		limitData = " limit 200 OFFSET 1"
+
 		dataFilterQ = whereQuery + dataFrom + dataTo + dataImei + dataPriority + dataEventId + dataSpeed +
 			dataIgnition +
 			dataGSMSignal +
@@ -875,9 +878,13 @@ func (adb *AVLDataBase) GetLastPointsData(ctx context.Context, dataFilter string
 			dataSensor19 +
 			dataSensor20 +
 			limitData
-		// + " order by timestamp desc limit 1000 OFFSET " + dataPg
 	}
-	devicesLastPointsDatasQuery := "SELECT imei,timestamp AS ts,toUInt8(priority) AS priority,longitude,latitude,toInt32(altitude),toInt32(angle),toInt32(satellites),toInt32(speed), toUInt32(event_id),io_elements FROM avlpoints " + dataFilterQ
+	if strings.Contains(dataFilter, "limit=") {
+		order = ""
+	} else {
+		order = " order by timestamp "
+	}
+	devicesLastPointsDatasQuery := "SELECT imei,timestamp AS ts,toUInt8(priority) AS priority,longitude,latitude,toInt32(altitude),toInt32(angle),toInt32(satellites),toInt32(speed), toUInt32(event_id),io_elements FROM avlpoints " + dataFilterQ + order
 
 	rows, err := adb.GetChConn().Query(ctx, devicesLastPointsDatasQuery, &dataFilterQ)
 	if err != nil {
@@ -886,9 +893,6 @@ func (adb *AVLDataBase) GetLastPointsData(ctx context.Context, dataFilter string
 		//)
 		return nil, err
 	}
-	logger.Info("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&2",
-		zap.Any("3:", rows),
-	)
 	defer rows.Close()
 	lastPointsData := make([]*devicepb.AVLData, 0)
 	for rows.Next() {
@@ -896,7 +900,7 @@ func (adb *AVLDataBase) GetLastPointsData(ctx context.Context, dataFilter string
 			lastPointData = &devicepb.AVLData{}
 			gps           = &devicepb.GPS{}
 			priority      uint8
-			elements      = make(map[string]float64)
+			elements      = make(map[string]string)
 		)
 		err := rows.Scan(
 			&lastPointData.Imei,
@@ -917,12 +921,49 @@ func (adb *AVLDataBase) GetLastPointsData(ctx context.Context, dataFilter string
 		lastPointData.Gps = gps
 		lastPointData.Priority = devicepb.PacketPriority(priority)
 		for Name, Value := range elements {
-			lastPointData.IoElements = append(lastPointData.IoElements, &devicepb.IOElement{
-				ElementName:  Name,
-				ElementValue: Value,
-			})
+			firstFloat, secondFloat, err := splitStrings(Value)
+			if err != nil {
+				lastPointData.IoElements = append(lastPointData.IoElements, &devicepb.IOElement{
+					ElementName:  Name,
+					ElementValue: 0,
+					NormalValue:  0,
+				})
+			} else {
+				lastPointData.IoElements = append(lastPointData.IoElements, &devicepb.IOElement{
+					ElementName:  Name,
+					ElementValue: firstFloat,
+					NormalValue:  secondFloat,
+				})
+			}
 		}
+
 		lastPointsData = append(lastPointsData, lastPointData)
 	}
 	return lastPointsData, nil
+}
+
+func splitStrings(elValue string) (val float64, normalVal float64, err error) {
+	underscoreIndex := strings.Index(elValue, "_")
+	if underscoreIndex != -1 {
+		firstPart := elValue[:underscoreIndex]
+		secondPart := elValue[underscoreIndex+1:]
+
+		firstFloat, err1 := strconv.ParseFloat(firstPart, 64)
+		secondFloat, err2 := strconv.ParseFloat(secondPart, 64)
+
+		if err1 != nil || err2 != nil {
+			return 0, 0, fmt.Errorf("error converting substrings to float64")
+		} else {
+			return firstFloat, secondFloat, nil
+		}
+	} else {
+		// Return 0 in both parameters if there is no underscore
+		ev, err := strconv.ParseFloat(elValue, 64)
+		if err != nil {
+			return 0, 0, fmt.Errorf("error converting substrings to float64")
+		} else {
+			return ev, 0, nil
+		}
+
+	}
 }
